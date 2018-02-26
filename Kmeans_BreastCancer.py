@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 import math
 
+# Load the Wisconsin Diagnostic Breast Cancer dataset (breast_data.csv). You should obtain a data
+# matrix with D = 30 features and N = 569 samples. Run K-means clustering on this data.
+
 dataset = pd.read_csv('breast_data.csv')
 X = dataset.iloc[:, :].values
 
@@ -19,6 +22,8 @@ newmatrix[1] = centroids_mat[0]
 newmatrix[0] = centroids_mat[1]
 parsedCentroids = np.array(newmatrix)
 
+# print(parsedCentroids)
+
 for i in range(len(Y)):
     if Y[i] == 1:
         malign.append(X[i])
@@ -33,7 +38,6 @@ matrix = [0, 0]
 matrix[1] = malignCentroids
 matrix[0] = benignCentroids
 true_centroids = np.array(matrix)
-print(true_centroids)
 
 
 def euclidian(a, b):
@@ -58,6 +62,9 @@ def prediction_accuracy(cm):
     return correct / total * 100
 
 
+""""(a) Implement a function that performs K-means clustering. You can get started with the following code:"""
+
+
 def kmeans(k, epsilon=0, distance='euclidian'):
     # List to store past centroid
     previous_centriods = []
@@ -67,9 +74,11 @@ def kmeans(k, epsilon=0, distance='euclidian'):
         dist_method = euclidian
 
     # Define k centroids
-    # prototypes = (X[np.random.randint(0, len(X[:]), size=k)])
-    prototypes = parsedCentroids
+    # prototypes = (X[np.random.randint(0, len(X[:]), size=k)])  # """For random centers"""
+    prototypes = centroids_mat #"""for e) part parsed Centers in the given file mu_init
+    # prototypes = true_centroids #for f) part parsed Centers in the given file
     # To see past centroids
+
     previous_centriods.append(prototypes)
     # keep track of centroids for every iteration
     prototypes_old = np.zeros(prototypes.shape)
@@ -114,9 +123,10 @@ def kmeans(k, epsilon=0, distance='euclidian'):
         # Add our calculated centroids to our history for comparison
         previous_centriods.append(tmp_prototypes)
     # Return calculated centroids, history of them all, and assignnments for which data set belons to
-    return belongs_to
+    return belongs_to  # Calculating Accuracy
 
 
+""" b) Implementing Kmeans on the data"""
 count = 0
 val = kmeans(2)
 total = len(Y)
@@ -125,3 +135,18 @@ for i, j in zip(Y, val):
     if i == j:
         count += 1
 print(count / len(Y))
+"""c) Accuracy = 82.04 with the above code"""
+
+"""d) as the matrix is randomly generated, the answer keeps on changing because of the bad initialization step that is the
+answer changes if we choose different centroids.csv. So, Kmeans++ initialization step can be used to improve it and get the best
+results."""
+"""e) accuracy = 16.54% for the centroids provided. check above for the parsed file and commented"""
+""" f) What if you initialize with the true centers, obtained using the true clustering?
+        Ans: Accuracy = 85.73
+        check above for the parsed data
+"""
+"""g) Supervised Learning: Logistic regression with 25:75 data split Accuracy = 97%"""
+"""   Supervised Learning: K-Nearest Neighbours with 25:75 data split Accuracy = 95%
+    Can be even higher with Neural network.
+"""
+"""   UnSupervised Learning: Hierarchical Clustering Accuracy = 77%"""
